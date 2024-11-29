@@ -22,10 +22,6 @@ dependencies {
     }
     implementation(project(":common"))
     implementation(project(":compatibility"))
-    implementation(project(":compatibility-oraxen-r1"))
-    implementation(project(":compatibility-oraxen-r2"))
-    implementation(project(":compatibility-itemsadder-r1"))
-    implementation(project(":compatibility-crucible-r1"))
     implementation(project(":compatibility-asp-r1"))
 
     implementation("net.kyori:adventure-api:${rootProject.properties["adventure_bundle_version"]}")
@@ -39,7 +35,8 @@ dependencies {
     implementation("com.github.Xiao-MoMi:Sparrow-Heart:${rootProject.properties["sparrow_heart_version"]}")
     implementation("com.saicone.rtag:rtag:${rootProject.properties["rtag_version"]}")
     implementation("com.saicone.rtag:rtag-item:${rootProject.properties["rtag_version"]}")
-    implementation("com.flowpowered:flow-nbt:${rootProject.properties["flow_nbt_version"]}") // do not relocate for compatibility with SWM
+    // TODO use sparrow-nbt
+    implementation("com.flowpowered:flow-nbt:${rootProject.properties["flow_nbt_version"]}") // do not relocate (compatibility with AdvancedSlimePaper)
     compileOnly("org.incendo:cloud-core:${rootProject.properties["cloud_core_version"]}")
     compileOnly("org.incendo:cloud-minecraft-extras:${rootProject.properties["cloud_minecraft_extras_version"]}")
     compileOnly("org.incendo:cloud-paper:${rootProject.properties["cloud_paper_version"]}")
@@ -50,6 +47,11 @@ dependencies {
 
 tasks {
     shadowJar {
+        from(project(":compatibility-nexo-r1").tasks.jar.get().archiveFile)
+        from(project(":compatibility-oraxen-r1").tasks.jar.get().archiveFile)
+        from(project(":compatibility-oraxen-r2").tasks.jar.get().archiveFile)
+        from(project(":compatibility-itemsadder-r1").tasks.jar.get().archiveFile)
+        from(project(":compatibility-crucible-r1").tasks.jar.get().archiveFile)
         archiveFileName = "CustomCrops-${rootProject.properties["project_version"]}.jar"
         destinationDirectory.set(file("$rootDir/target"))
         relocate("net.kyori", "net.momirealms.customcrops.libraries")

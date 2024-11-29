@@ -78,7 +78,7 @@ public class BukkitItemManager extends AbstractItemManager {
             plugin.getPluginLogger().warn("Failed to load CustomItemProvider", e);
         }
         if (this.provider == null) {
-            plugin.getPluginLogger().warn("ItemsAdder/Oraxen are not installed, which can cause problems unless you use the CustomCrops API.");
+            plugin.getPluginLogger().warn("ItemsAdder/Oraxen/Nexo/MythicCrucible are not installed. You can safely ignore this if you implemented the custom item interface with API.");
         }
         this.factory = BukkitItemFactory.create(plugin);
     }
@@ -157,6 +157,19 @@ public class BukkitItemManager extends AbstractItemManager {
             this.setCustomEventListener((AbstractCustomEventListener) oraxenListenerConstructor.newInstance(this));
 
             plugin.getPluginLogger().info("Oraxen hooked!");
+        } else if (PluginUtils.isEnabled("Nexo")) {
+            String rVersion = "r1";
+            Class<?> nexoProviderClass = Class.forName("net.momirealms.customcrops.bukkit.integration.custom.nexo_" + rVersion + ".NexoProvider");
+            Constructor<?> nexoProviderConstructor = nexoProviderClass.getDeclaredConstructor();
+            nexoProviderConstructor.setAccessible(true);
+            this.provider = (CustomItemProvider) nexoProviderConstructor.newInstance();
+
+            Class<?> nexoListenerClass = Class.forName("net.momirealms.customcrops.bukkit.integration.custom.nexo_" + rVersion + ".NexoListener");
+            Constructor<?> nexoListenerConstructor = nexoListenerClass.getDeclaredConstructor(AbstractItemManager.class);
+            nexoListenerConstructor.setAccessible(true);
+            this.setCustomEventListener((AbstractCustomEventListener) nexoListenerConstructor.newInstance(this));
+
+            plugin.getPluginLogger().info("Nexo hooked!");
         } else if (PluginUtils.isEnabled("ItemsAdder")) {
             String rVersion = "r1";
             Class<?> itemsAdderProviderClass = Class.forName("net.momirealms.customcrops.bukkit.integration.custom.itemsadder_" + rVersion + ".ItemsAdderProvider");
