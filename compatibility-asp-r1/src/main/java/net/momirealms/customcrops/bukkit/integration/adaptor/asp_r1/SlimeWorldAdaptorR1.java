@@ -84,7 +84,7 @@ public class SlimeWorldAdaptorR1 extends AbstractWorldAdaptor<SlimeWorld> implem
     public void onWorldLoad(LoadSlimeWorldEvent event) {
         World world = Bukkit.getWorld(event.getSlimeWorld().getName());
         if (!BukkitCustomCropsPlugin.getInstance().getWorldManager().isMechanicEnabled(world)) return;
-        BukkitCustomCropsPlugin.getInstance().getWorldManager().loadWorld(world);
+        BukkitCustomCropsPlugin.getInstance().getWorldManager().loadWorld(adapt(event.getSlimeWorld()));
     }
 
     @Override

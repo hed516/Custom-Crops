@@ -1,19 +1,19 @@
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://mvn.lumine.io/repository/maven-public/")
+    maven("https://repo.momirealms.net/releases/")
 }
 
 dependencies {
     compileOnly(project(":api"))
     compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
-    compileOnly("io.lumine:Mythic-Dist:5.7.1")
-    compileOnly("io.lumine:MythicCrucible-Dist:2.1.0-SNAPSHOT")
+    compileOnly("net.momirealms:craft-engine-core:0.0.16")
+    compileOnly("net.momirealms:craft-engine-bukkit:0.0.16")
 }
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
-    options.release.set(17)
+    options.release.set(21)
 }
 
 java {

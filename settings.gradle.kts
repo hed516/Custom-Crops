@@ -1,5 +1,4 @@
 rootProject.name = "CustomCrops"
-include(":common")
 include(":api")
 include(":plugin")
 include(":compatibility")
@@ -9,3 +8,4 @@ include(":compatibility-oraxen-r2")
 include(":compatibility-nexo-r1")
 include(":compatibility-itemsadder-r1")
 include(":compatibility-crucible-r1")
+include(":compatibility-craftengine-r1")
