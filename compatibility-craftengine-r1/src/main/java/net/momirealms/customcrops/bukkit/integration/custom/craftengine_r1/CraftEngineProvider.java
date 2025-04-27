@@ -23,9 +23,11 @@ import net.momirealms.craftengine.bukkit.api.CraftEngineItems;
 import net.momirealms.craftengine.bukkit.entity.furniture.LoadedFurniture;
 import net.momirealms.craftengine.core.block.ImmutableBlockState;
 import net.momirealms.craftengine.core.entity.furniture.AnchorType;
+import net.momirealms.craftengine.core.item.ItemBuildContext;
 import net.momirealms.craftengine.core.util.Key;
 import net.momirealms.craftengine.libraries.nbt.CompoundTag;
 import net.momirealms.customcrops.api.core.CustomItemProvider;
+import net.momirealms.customcrops.api.util.LocationUtils;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -49,7 +51,7 @@ public class CraftEngineProvider implements CustomItemProvider {
 
     @Override
     public @Nullable Entity placeFurniture(Location location, String id) {
-        LoadedFurniture furniture = CraftEngineFurniture.place(location, Key.of(id), AnchorType.GROUND);
+        LoadedFurniture furniture = CraftEngineFurniture.place(LocationUtils.toSurfaceCenterLocation(location), Key.of(id), AnchorType.GROUND);
         if (furniture == null) return null;
         return furniture.baseEntity();
     }
@@ -74,14 +76,14 @@ public class CraftEngineProvider implements CustomItemProvider {
     @Override
     public @Nullable ItemStack itemStack(Player player, String id) {
         return Optional.ofNullable(CraftEngineItems.byId(Key.of(id)))
-                .map(it -> it.buildItemStack(null))
+                .map(it -> it.buildItemStack(ItemBuildContext.EMPTY))
                 .orElse(null);
     }
 
     @Override
     public @Nullable String furnitureID(Entity entity) {
         return Optional.ofNullable(CraftEngineFurniture.getLoadedFurnitureByBaseEntity(entity))
-                .map(it -> it.furnitureId().toString())
+                .map(it -> it.id().toString())
                 .orElse(null);
     }
 

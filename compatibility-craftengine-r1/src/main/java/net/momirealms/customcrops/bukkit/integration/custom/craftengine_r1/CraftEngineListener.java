@@ -38,7 +38,7 @@ public class CraftEngineListener extends AbstractCustomEventListener {
         itemManager.handlePlayerInteractFurniture(
                 event.getPlayer(),
                 event.furniture().location(),
-                event.furniture().furnitureId().toString(),
+                event.furniture().id().toString(),
                 slot,
                 event.getPlayer().getInventory().getItem(slot),
                 event
@@ -47,16 +47,18 @@ public class CraftEngineListener extends AbstractCustomEventListener {
 
     @EventHandler(ignoreCancelled = true)
     public void onInteractCustomBlock(CustomBlockInteractEvent event) {
-        EquipmentSlot slot = event.hand() == InteractionHand.MAIN_HAND ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND;
-        itemManager.handlePlayerInteractBlock(
-                event.getPlayer(),
-                event.location().getBlock(),
-                event.customBlock().id().toString(),
-                event.clickedFace(),
-                slot,
-                event.getPlayer().getInventory().getItem(slot),
-                event
-        );
+        if (event.action() == CustomBlockInteractEvent.Action.RIGHT_CLICK) {
+            EquipmentSlot slot = event.hand() == InteractionHand.MAIN_HAND ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND;
+            itemManager.handlePlayerInteractBlock(
+                    event.getPlayer(),
+                    event.location().getBlock(),
+                    event.customBlock().id().toString(),
+                    event.clickedFace(),
+                    slot,
+                    event.getPlayer().getInventory().getItem(slot),
+                    event
+            );
+        }
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -65,7 +67,7 @@ public class CraftEngineListener extends AbstractCustomEventListener {
                 event.getPlayer(),
                 event.furniture().baseEntity().getLocation(),
                 event.getPlayer().getInventory().getItemInMainHand(),
-                event.furniture().furnitureId().toString(),
+                event.furniture().id().toString(),
                 event
         );
     }
@@ -82,7 +84,7 @@ public class CraftEngineListener extends AbstractCustomEventListener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onPlaceCustomBlock(CustomBlockAttemptPlaceEvent event) {
+    public void onPlaceCustomBlock(CustomBlockPlaceEvent event) {
         EquipmentSlot slot = event.hand() == InteractionHand.MAIN_HAND ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND;
         itemManager.handlePlayerPlace(
                 event.getPlayer(),
@@ -95,7 +97,7 @@ public class CraftEngineListener extends AbstractCustomEventListener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onPlaceFurniture(FurnitureAttemptPlaceEvent event) {
+    public void onPlaceFurniture(FurniturePlaceEvent event) {
         EquipmentSlot slot = event.hand() == InteractionHand.MAIN_HAND ? EquipmentSlot.HAND : EquipmentSlot.OFF_HAND;
         Player player = event.getPlayer();
         itemManager.handlePlayerPlace(

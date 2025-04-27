@@ -5,6 +5,7 @@ repositories {
     maven("https://jitpack.io/")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // papi
+    maven("https://repo.momirealms.net/releases/")
 }
 
 dependencies {
@@ -16,6 +17,7 @@ dependencies {
     }
     implementation(project(":compatibility"))
     implementation(project(":compatibility-asp-r1"))
+//    implementation(project(":compatibility-asp-r2"))
 
     implementation("net.kyori:adventure-api:${rootProject.properties["adventure_bundle_version"]}")
     implementation("net.kyori:adventure-text-minimessage:${rootProject.properties["adventure_bundle_version"]}")
@@ -25,7 +27,7 @@ dependencies {
     }
     implementation("net.kyori:adventure-text-serializer-legacy:${rootProject.properties["adventure_bundle_version"]}")
     implementation("com.github.Xiao-MoMi:AntiGriefLib:${rootProject.properties["anti_grief_version"]}")
-    implementation("com.github.Xiao-MoMi:Sparrow-Heart:${rootProject.properties["sparrow_heart_version"]}")
+    implementation("net.momirealms:sparrow-heart:${rootProject.properties["sparrow_heart_version"]}")
     implementation("com.saicone.rtag:rtag:${rootProject.properties["rtag_version"]}")
     implementation("com.saicone.rtag:rtag-item:${rootProject.properties["rtag_version"]}")
     // TODO use sparrow-nbt
@@ -40,12 +42,13 @@ dependencies {
 
 tasks {
     shadowJar {
-        from(project(":compatibility-nexo-r1").tasks.jar.get().archiveFile)
-        from(project(":compatibility-oraxen-r1").tasks.jar.get().archiveFile)
-        from(project(":compatibility-oraxen-r2").tasks.jar.get().archiveFile)
-        from(project(":compatibility-itemsadder-r1").tasks.jar.get().archiveFile)
-        from(project(":compatibility-crucible-r1").tasks.jar.get().archiveFile)
-        from(project(":compatibility-craftengine-r1").tasks.jar.get().archiveFile)
+        from(zipTree(project(":compatibility-nexo-r1").tasks.jar.get().archiveFile))
+        from(zipTree(project(":compatibility-oraxen-r1").tasks.jar.get().archiveFile))
+        from(zipTree(project(":compatibility-oraxen-r2").tasks.jar.get().archiveFile))
+        from(zipTree(project(":compatibility-itemsadder-r1").tasks.jar.get().archiveFile))
+        from(zipTree(project(":compatibility-itemsadder-r2").tasks.jar.get().archiveFile))
+        from(zipTree(project(":compatibility-crucible-r1").tasks.jar.get().archiveFile))
+        from(zipTree(project(":compatibility-craftengine-r1").tasks.jar.get().archiveFile))
         archiveFileName = "CustomCrops-${rootProject.properties["project_version"]}.jar"
         destinationDirectory.set(file("$rootDir/target"))
         relocate("net.kyori", "net.momirealms.customcrops.libraries")

@@ -28,6 +28,7 @@ import net.momirealms.customcrops.api.integration.SeasonProvider;
 import net.momirealms.customcrops.bukkit.config.BukkitConfigManager;
 import net.momirealms.customcrops.bukkit.integration.adaptor.BukkitWorldAdaptor;
 import net.momirealms.customcrops.bukkit.integration.adaptor.asp_r1.SlimeWorldAdaptorR1;
+import net.momirealms.customcrops.common.helper.VersionHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
@@ -53,19 +54,22 @@ public class BukkitWorldManager implements WorldManager, Listener {
 
     public BukkitWorldManager(BukkitCustomCropsPlugin plugin) {
         this.plugin = plugin;
-        try {
-            Class.forName("com.infernalsuite.aswm.api.SlimePlugin");
-            SlimeWorldAdaptorR1 adaptor = new SlimeWorldAdaptorR1(1);
-            adaptors.add(adaptor);
-            Bukkit.getPluginManager().registerEvents(adaptor, plugin.getBootstrap());
-            plugin.getPluginLogger().info("SlimeWorldManager hooked!");
-        } catch (ClassNotFoundException ignored) {
-        }
-        if (Bukkit.getPluginManager().isPluginEnabled("SlimeWorldPlugin")) {
-            SlimeWorldAdaptorR1 adaptor = new SlimeWorldAdaptorR1(2);
-            adaptors.add(adaptor);
-            Bukkit.getPluginManager().registerEvents(adaptor, plugin.getBootstrap());
-            plugin.getPluginLogger().info("AdvancedSlimePaper hooked!");
+        // asp uses adventure nbt since 1.21.4
+        if (!VersionHelper.isVersionNewerThan1_21_4()) {
+            try {
+                Class.forName("com.infernalsuite.aswm.api.SlimePlugin");
+                SlimeWorldAdaptorR1 adaptor = new SlimeWorldAdaptorR1(1);
+                adaptors.add(adaptor);
+                Bukkit.getPluginManager().registerEvents(adaptor, plugin.getBootstrap());
+                plugin.getPluginLogger().info("SlimeWorldManager hooked!");
+            } catch (ClassNotFoundException ignored) {
+            }
+            if (Bukkit.getPluginManager().isPluginEnabled("SlimeWorldPlugin")) {
+                SlimeWorldAdaptorR1 adaptor = new SlimeWorldAdaptorR1(2);
+                adaptors.add(adaptor);
+                Bukkit.getPluginManager().registerEvents(adaptor, plugin.getBootstrap());
+                plugin.getPluginLogger().info("AdvancedSlimePaper hooked!");
+            }
         }
         this.adaptors.add(new BukkitWorldAdaptor());
         this.seasonProvider = new SeasonProvider() {
@@ -145,15 +149,20 @@ public class BukkitWorldManager implements WorldManager, Listener {
 
     @Override
     public void disable() {
+        plugin.debug(() -> "Saving Worlds");
         this.unload();
         for (World world : Bukkit.getWorlds()) {
+            plugin.debug(() -> "Unloading " + world.getName());
             unloadWorld(world, true);
+            plugin.debug(() -> "Unloaded " + world.getName());
         }
+        plugin.debug(() -> "Unload adaptors");
         for (WorldAdaptor<?> adaptor : this.adaptors) {
             if (adaptor instanceof Listener listener) {
                 HandlerList.unregisterAll(listener);
             }
         }
+        plugin.debug(() -> "Unloaded Worlds");
     }
 
     private void loadConfig() {
@@ -250,9 +259,12 @@ public class BukkitWorldManager implements WorldManager, Listener {
             return false;
         }
         removedWorld.setTicking(false);
+        plugin.debug(() -> "Unloading -> Saving");
         removedWorld.save(false, disabling);
+        plugin.debug(() -> "Saving -> Shutdown");
         removedWorld.scheduler().shutdownScheduler();
         removedWorld.scheduler().shutdownExecutor();
+        plugin.debug(() -> "Finished Shutdown");
         return true;
     }
 
